@@ -1,19 +1,19 @@
 export interface InternalUrl {
-  /** @default "http://localhost:3000" */
+  /** @default "https://dev.example.com:3000" */
   origin: string
-  /** @default "localhost:3000" */
+  /** @default "dev.example.com:3000" */
   host: string
   /** @default "/api/auth" */
   path: string
-  /** @default "http://localhost:3000/api/auth" */
+  /** @default "https://dev.example.com:3000/api/auth" */
   base: string
-  /** @default "http://localhost:3000/api/auth" */
+  /** @default "https://dev.example.com:3000/api/auth" */
   toString: () => string
 }
 
 /** Returns an `URL` like object to make requests/redirects from server-side */
 export default function parseUrl(url?: string): InternalUrl {
-  const defaultUrl = new URL("http://localhost:3000/api/auth")
+  const defaultUrl = new URL("https://dev.example.com/api/auth")
 
   if (url && !url.startsWith("http")) {
     url = `https://${url}`

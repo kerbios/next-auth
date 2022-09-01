@@ -138,7 +138,7 @@ export async function NextAuthHandler<
     req,
     options.logger
   )
-
+  logger.debug("REQUEST?:", {method, req})
   if (method === "GET") {
     const render = renderPage({ ...options, query: req.query, cookies })
     const { pages } = options

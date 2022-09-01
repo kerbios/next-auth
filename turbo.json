@@ -42,7 +42,7 @@
     },
     "next-auth-app#dev": {
       "cache": false,
-      "dependsOn": ["next-auth#setup"]
+      "dependsOn": ["@kerbios/next-auth#setup"]
     }
   }
 }

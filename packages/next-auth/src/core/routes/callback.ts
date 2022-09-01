@@ -1,6 +1,8 @@
 import oAuthCallback from "../lib/oauth/callback"
+import openidCallback from '../lib/steam/callback'
 import callbackHandler from "../lib/callback-handler"
 import { hashToken } from "../lib/utils"
+import URL_API from 'url'
 
 import type { InternalOptions } from "../types"
 import type { RequestInternal, OutgoingResponse } from ".."
@@ -9,7 +11,7 @@ import type { User } from "../.."
 
 /** Handle callbacks from login services */
 export default async function callback(params: {
-  options: InternalOptions<"oauth" | "credentials" | "email">
+  options: InternalOptions<"oauth" | "credentials" | "email" | "openid">
   query: RequestInternal["query"]
   method: Required<RequestInternal>["method"]
   body: RequestInternal["body"]
@@ -30,7 +32,7 @@ export default async function callback(params: {
     session: { strategy: sessionStrategy, maxAge: sessionMaxAge },
     logger,
   } = options
-
+  //console.log("Callback params:", {url, callbackUrl, query});
   const cookies: Cookie[] = []
 
   const useJwtSession = sessionStrategy === "jwt"
@@ -326,6 +328,146 @@ export default async function callback(params: {
       logger.error("CALLBACK_EMAIL_ERROR", error as Error)
       return { redirect: `${url}/error?error=Callback`, cookies }
     }
+  } else if (provider.type === 'openid') {
+    try {
+      const parts = URL_API.parse(provider.returnUrl as string, true)
+      parts.query = query as any;
+      let account
+      let profile
+      try {
+        ({ account, profile} = await openidCallback(URL_API.format(parts as URL_API.UrlObject), provider))
+        console.log("RESPONSE:", account, profile)
+
+     } catch (error) {
+       logger.error('CALLBACK_OPENID_ERROR', error)
+       return { redirect: `${url}/error?error=openIdCallback` }
+     }
+
+      if (!profile) {
+        return { redirect: `${url}/signin`, cookies }
+      }
+
+     try {
+        // Check if user is allowed to sign in
+        let userOrProfile = profile
+
+        if (adapter) {
+          const { getUserByAccount } = adapter
+          const userByAccount = await getUserByAccount({
+            providerAccountId: account.id,
+            provider: provider.id,
+          })
+
+          if (userByAccount) userOrProfile = userByAccount
+        }
+        console.log("ADAPTER PASSED:", account, profile)
+        try {
+          const isAllowed = await callbacks.signIn({
+            user: userOrProfile,
+            account,
+            profile,
+            email: profile.email
+          })
+          console.log("isAllowed:", isAllowed, cookies)
+       } catch (error) {
+          return {
+            redirect: `${url}/error?error=${encodeURIComponent(
+              (error as Error).message
+            )}`,
+            cookies,
+         }
+       }
+        //=================================================================================================
+        // Sign user in
+
+        console.log("callbackHandler:", {
+          sessionToken: sessionStore.value,
+          profile,
+          account,
+          options,
+        })
+        let user
+        /*const { user, session, isNewUser } = await callbackHandler({
+          sessionToken: sessionStore.value,
+          profile,
+          account,
+          options,
+        })*/
+
+        // console.log("callbackHandler Result:", { user, session, isNewUser })
+
+        if (useJwtSession) {
+          const defaultToken = {
+            id: account.id,
+            name: profile.name,
+            picture: profile.image,
+            steamId: account.id
+          }
+
+          const token = await callbacks.jwt({
+            token: defaultToken,
+            user,
+            account,
+            profile
+          })
+
+          // Encode token
+          const newToken = await jwt.encode({ ...jwt, token })
+
+          // Set cookie expiry date
+          const cookieExpires = new Date()
+          cookieExpires.setTime(cookieExpires.getTime() + sessionMaxAge * 1000)
+
+          const sessionCookies = sessionStore.chunk(newToken, {
+            expires: cookieExpires,
+          })
+          cookies.push(...sessionCookies)
+        } else {
+          // Save Session Token in cookie
+          // cookies.push({
+          //   name: options.cookies.sessionToken.name,
+          //   value: session.sessionToken,
+          //   options: {
+          //     ...options.cookies.sessionToken.options,
+          //     expires: session.expires,
+          //   },
+          // })
+        }
+
+        await events.signIn?.({ user, account, profile })
+        //===============================================================================
+        // Handle first logins on new accounts
+        // e.g. option to send users to a new account landing page on initial login
+        // Note that the callback URL is preserved, so the journey can still be resumed
+        /*
+        if (isNewUser && pages.newUser) {
+          return {
+            redirect: `${pages.newUser}${
+              pages.newUser.includes("?") ? "&" : "?"
+            }callbackUrl=${encodeURIComponent(callbackUrl)}`,
+            cookies,
+          }
+        }
+        */
+
+        // Callback URL is already verified at this point, so safe to use if specified
+        return { redirect: "/", cookies }
+     } catch (error) {
+      if (error.name === 'AccountNotLinkedError') {
+        // If the email on the account is already linked, but nto with this oAuth account
+        return { redirect:`${url}/error?error=OpenIdAcountNotLinked`, cookies }
+      } else if (error.name === 'CreateUserError') {
+        return { redirect: `${url}/error?error=OpenIdCreateAccount`, cookies }
+      } else {
+        logger.error('OPENID_CALLBACK_HANDLER_ERROR', error)
+        return { redirect: `${url}/error?error=Callback`, cookies }
+      }
+     }
+    } catch (error) {
+      logger.error('OPENID_CALLBACK_ERROR', error)
+      return { redirect: `${url}/error?error=Callback`, cookies}
+    }
+  
   } else if (provider.type === "credentials" && method === "POST") {
     const credentials = body
 

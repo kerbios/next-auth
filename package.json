@@ -2,7 +2,7 @@
   "name": "root",
   "version": "0.0.0",
   "private": true,
-  "repository": "https://github.com/nextauthjs/next-auth.git",
+  "repository": "https://github.com/kerbios/next-auth.git",
   "scripts": {
     "build:app": "turbo run build --filter=next-auth-app --include-dependencies",
     "build": "turbo run build --filter=next-auth --filter=@next-auth/* --no-deps",
@@ -37,7 +37,7 @@
     "typescript": "^4.5.2"
   },
   "engines": {
-    "node": "^12.19.0 || ^14.15.0 || ^16.13.0",
+    "node": "^12.19.0 || ^14.15.0 || ^16.13.0 || ^18.7.0",
     "pnpm": ">=6.32.3"
   },
   "prettier": {

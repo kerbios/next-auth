@@ -1,18 +1,19 @@
 import getAuthorizationUrl from "../lib/oauth/authorization-url"
 import emailSignin from "../lib/email/signin"
+import getOpenIDAuthorizationUrl from '../lib/steam/authorization-url'
 import type { RequestInternal, OutgoingResponse } from ".."
 import type { InternalOptions } from "../types"
 import type { Account, User } from "../.."
 
 /** Handle requests to /api/auth/signin */
 export default async function signin(params: {
-  options: InternalOptions<"oauth" | "email">
+  options: InternalOptions<"oauth" | "email" | "openid">
   query: RequestInternal["query"]
   body: RequestInternal["body"]
 }): Promise<OutgoingResponse> {
   const { options, query, body } = params
   const { url, adapter, callbacks, logger, provider } = options
-
+  logger.debug("SIGN IN!!!!!", provider)
   if (!provider.type) {
     return {
       status: 500,
@@ -97,6 +98,15 @@ export default async function signin(params: {
     } catch (error) {
       logger.error("SIGNIN_EMAIL_ERROR", { error, providerId: provider.id })
       return { redirect: `${url}/error?error=EmailSignin` }
+    }
+  } else if (provider.type === 'openid') {
+    try {
+      const openIdSigninUrl = await getOpenIDAuthorizationUrl(provider)
+      console.log('openIdSigninUrl', openIdSigninUrl)
+      return { redirect: openIdSigninUrl }
+    } catch (error) {
+      logger.error('SIGNIN_OPENID_ERROR', error)
+      return { redirect: `${url}/error?error=openIdSignin` }
     }
   }
   return { redirect: `${url}/signin` }

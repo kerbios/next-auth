@@ -37,7 +37,7 @@ export default function SigninPage(props: SignInServerPageParams) {
   } = props
   // We only want to render providers
   const providersToRender = providers.filter((provider) => {
-    if (provider.type === "oauth" || provider.type === "email") {
+    if (provider.type === "oauth" || provider.type === "email" || provider.type === "openid") {
       // Always render oauth and email type providers
       return true
     } else if (provider.type === "credentials" && provider.credentials) {
@@ -87,7 +87,7 @@ export default function SigninPage(props: SignInServerPageParams) {
         />
       )}
       {theme.logo && <img src={theme.logo} alt="Logo" className="logo" />}
-      <div className="card">
+      <div className="">
         {error && (
           <div className="error">
             <p>{error}</p>
@@ -95,7 +95,7 @@ export default function SigninPage(props: SignInServerPageParams) {
         )}
         {providersToRender.map((provider, i: number) => (
           <div key={provider.id} className="provider">
-            {provider.type === "oauth" && (
+            {(provider.type === "oauth") && (
               <form action={provider.signinUrl} method="POST">
                 <input type="hidden" name="csrfToken" value={csrfToken} />
                 {callbackUrl && (
@@ -105,6 +105,20 @@ export default function SigninPage(props: SignInServerPageParams) {
                   Sign in with {provider.name}
                 </button>
               </form>
+            )}
+            {(provider.type === "openid") && (
+              <div>
+                <form action={provider.signinUrl} method="POST">
+
+                  <input type="hidden" name="csrfToken" value={csrfToken} />
+                  {provider.callbackUrl && (
+                    <input type="hidden" name="callbackUrl" value={callbackUrl} />
+                  )}
+                  <button type="submit" className="button">
+                    Sign in with {provider.name}
+                  </button>
+              </form>
+              </div>
             )}
             {(provider.type === "email" || provider.type === "credentials") &&
               i > 0 &&

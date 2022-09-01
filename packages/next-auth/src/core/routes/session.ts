@@ -55,6 +55,7 @@ export default async function session(
           name: decodedToken?.name,
           email: decodedToken?.email,
           image: decodedToken?.picture,
+          steamId: decodedToken?.steamId
         },
         expires: newExpires.toISOString(),
       }
