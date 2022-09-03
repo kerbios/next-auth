@@ -1,6 +1,7 @@
 # Misc
 .DS_Store
 .npmrc
+.github
 
 .env
 .env.local
