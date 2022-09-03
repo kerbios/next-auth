@@ -35,7 +35,7 @@ This is a monorepo containing the following packages / projects:
 
 1. The primary `next-auth` package
 2. A development test application
-3. All `@next-auth/*-adapter` packages
+3. All `@brazy-auth/*-adapter` packages
 4. The documentation site
 
 ## Getting Started

@@ -1,6 +1,6 @@
 {
-  "name": "@kerbios/next-auth",
-  "version": "4.10.3",
+  "name": "brazy-auth",
+  "version": "5.10.3",
   "description": "Authentication for Next.js",
   "repository": "https://github.com/kerbios/next-auth.git",
   "author": "Artem Deulia <kerbios@gmail.com>",
@@ -93,7 +93,7 @@
     "@babel/preset-env": "^7.18.2",
     "@babel/preset-react": "^7.17.12",
     "@babel/preset-typescript": "^7.17.12",
-    "@next-auth/tsconfig": "workspace:^0.0.0",
+    "@brazy-auth/tsconfig": "workspace:^0.0.0",
     "@swc/core": "^1.2.198",
     "@swc/jest": "^0.2.21",
     "@testing-library/dom": "^8.13.0",

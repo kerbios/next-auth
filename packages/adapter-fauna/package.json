@@ -1,5 +1,5 @@
 {
-  "name": "@next-auth/fauna-adapter",
+  "name": "@brazy-auth/fauna-adapter",
   "version": "1.0.4",
   "description": "Fauna Adapter for NextAuth",
   "homepage": "https://next-auth.js.org",
@@ -45,13 +45,13 @@
   },
   "devDependencies": {
     "@fauna-labs/fauna-schema-migrate": "^2.1.3",
-    "@next-auth/adapter-test": "workspace:^0.0.0",
-    "@next-auth/tsconfig": "workspace:^0.0.0",
+    "@brazy-auth/adapter-test": "workspace:^0.0.0",
+    "@brazy-auth/tsconfig": "workspace:^0.0.0",
     "faunadb": "^4.3.0",
     "jest": "^27.4.3",
-    "@kerbios/next-auth": "workspace:*"
+    "@brazy-auth/next-auth": "workspace:*"
   },
   "jest": {
-    "preset": "@next-auth/adapter-test/jest"
+    "preset": "@brazy-auth/adapter-test/jest"
   }
 }

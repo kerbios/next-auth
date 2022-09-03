@@ -5,7 +5,7 @@
     "build": {
       "dependsOn": ["^build"]
     },
-    "next-auth#build": {
+    "brazy-auth#build": {
       "dependsOn": ["^build"],
       "outputs": [
         "lib/**",
@@ -27,7 +27,7 @@
       "dependsOn": ["lint", "build"],
       "outputs": []
     },
-    "@next-auth/upstash-redis-adapter#test": {
+    "@brazy-auth/upstash-redis-adapter#test": {
       "dependsOn": [
         "lint",
         "build",
@@ -39,10 +39,6 @@
     "setup": {},
     "dev": {
       "cache": false
-    },
-    "next-auth-app#dev": {
-      "cache": false,
-      "dependsOn": ["@kerbios/next-auth#setup"]
     }
   }
 }
