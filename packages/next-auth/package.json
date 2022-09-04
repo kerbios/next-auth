@@ -137,8 +137,5 @@
     "./*.d.ts",
     "**/tests",
     "**/__tests__"
-  ],
-  "publishConfig": {
-    "registry":"https://npm.pkg.github.com"
-  }
+  ]
 }

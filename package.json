@@ -1,7 +1,7 @@
 {
   "name": "root",
   "version": "0.0.0",
-  "private": true,
+  "private": false,
   "repository": "https://github.com/kerbios/next-auth.git",
   "scripts": {
     "build": "turbo run build --filter=brazy-auth --filter=@brazy-auth/* --no-deps",
