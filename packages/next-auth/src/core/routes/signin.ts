@@ -65,7 +65,7 @@ export default async function signin(params: {
     }
 
     const account: Account = {
-      providerAccountId: email,
+      steamId: email,
       userId: email,
       type: "email",
       provider: provider.id,

@@ -193,7 +193,7 @@ async function getProfile({
       account: {
         provider: provider.id,
         type: provider.type,
-        providerAccountId: profile.id.toString(),
+        steamId: profile.id.toString(),
         ...tokens,
       },
       OAuthProfile,

@@ -1,6 +1,6 @@
 {
   "name": "brazy-auth",
-  "version": "5.10.3",
+  "version": "5.10.14",
   "description": "Authentication for Next.js",
   "repository": "https://github.com/kerbios/next-auth.git",
   "author": "Artem Deulia <kerbios@gmail.com>",
@@ -70,6 +70,7 @@
     "cookie": "^0.4.1",
     "jose": "^4.3.7",
     "oauth": "^0.9.15",
+    "openid": "^2.0.7",
     "openid-client": "^5.1.0",
     "preact": "^10.6.3",
     "preact-render-to-string": "^5.1.19",
@@ -121,9 +122,7 @@
     "postcss-nested": "^5.0.6",
     "react": "^18",
     "react-dom": "^18",
-    "whatwg-fetch": "^3.6.2",
-    "node-fetch": "^2.6.1",
-    "openid": "^2.0.7"
+    "whatwg-fetch": "^3.6.2"
   },
   "engines": {
     "node": "^12.19.0 || ^14.15.0 || ^16.13.0 || ^18.7.0"

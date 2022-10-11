@@ -83,7 +83,7 @@ export default async function callback(params: {
           const { getUserByAccount } = adapter
           const userByAccount = await getUserByAccount({
             // @ts-expect-error
-            providerAccountId: account.providerAccountId,
+            steamId: account.id,
             provider: provider.id,
           })
 
@@ -226,7 +226,7 @@ export default async function callback(params: {
 
       /** @type {import("src").Account} */
       const account = {
-        providerAccountId: profile.email,
+        steamId: profile.email,
         type: "email",
         provider: provider.id,
       }
@@ -350,11 +350,12 @@ export default async function callback(params: {
      try {
         // Check if user is allowed to sign in
         let userOrProfile = profile
-
+        console.log('IS ADAPTER: ', adapter)
         if (adapter) {
+          
           const { getUserByAccount } = adapter
           const userByAccount = await getUserByAccount({
-            providerAccountId: account.id,
+            steamId: account.id as string,
             provider: provider.id,
           })
 
@@ -386,15 +387,15 @@ export default async function callback(params: {
           account,
           options,
         })
-        let user
-        /*const { user, session, isNewUser } = await callbackHandler({
+        //@ts-ignore
+        const { user, session, isNewUser } = await callbackHandler({
           sessionToken: sessionStore.value,
           profile,
           account,
           options,
-        })*/
+        })
 
-        // console.log("callbackHandler Result:", { user, session, isNewUser })
+        console.log("callbackHandler Result:", { user, session, isNewUser })
 
         if (useJwtSession) {
           const defaultToken = {
@@ -424,14 +425,14 @@ export default async function callback(params: {
           cookies.push(...sessionCookies)
         } else {
           // Save Session Token in cookie
-          // cookies.push({
-          //   name: options.cookies.sessionToken.name,
-          //   value: session.sessionToken,
-          //   options: {
-          //     ...options.cookies.sessionToken.options,
-          //     expires: session.expires,
-          //   },
-          // })
+          cookies.push({
+            name: options.cookies.sessionToken.name,
+            value: session.sessionToken,
+            options: {
+              ...options.cookies.sessionToken.options,
+              expires: session.expires,
+            },
+          })
         }
 
         await events.signIn?.({ user, account, profile })
@@ -439,7 +440,7 @@ export default async function callback(params: {
         // Handle first logins on new accounts
         // e.g. option to send users to a new account landing page on initial login
         // Note that the callback URL is preserved, so the journey can still be resumed
-        /*
+      
         if (isNewUser && pages.newUser) {
           return {
             redirect: `${pages.newUser}${
@@ -448,7 +449,6 @@ export default async function callback(params: {
             cookies,
           }
         }
-        */
 
         // Callback URL is already verified at this point, so safe to use if specified
         return { redirect: "/", cookies }
@@ -501,7 +501,7 @@ export default async function callback(params: {
 
     /** @type {import("src").Account} */
     const account = {
-      providerAccountId: user.id,
+      steamId: user.id,
       type: "credentials",
       provider: provider.id,
     }
@@ -532,9 +532,9 @@ export default async function callback(params: {
     }
 
     const defaultToken = {
-      name: user.name,
+      name: `${user.firstName} ${user.lastName}`,
       email: user.email,
-      picture: user.image,
+      picture: user.image as string,
       sub: user.id?.toString(),
     }
 

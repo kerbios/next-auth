@@ -28,9 +28,9 @@ export default async function callbackHandler(params: {
 }) {
   const { sessionToken, profile, account, options } = params
   // Input validation
-  if (!account?.providerAccountId || !account.type)
+  if (!account?.id || !account.type)
     throw new Error("Missing or invalid provider account")
-  if (!["email", "oauth"].includes(account.type))
+  if (!["email", "oauth", "openid"].includes(account.type))
     throw new Error("Provider not supported")
 
   const {
@@ -63,22 +63,30 @@ export default async function callbackHandler(params: {
   let isNewUser = false
 
   const useJwtSession = sessionStrategy === "jwt"
-
+  console.log('sessionToken:', sessionToken)
   if (sessionToken) {
+    console.log('useJwtSession:', useJwtSession)
     if (useJwtSession) {
       try {
         session = await jwt.decode({ ...jwt, token: sessionToken })
+        console.log("session:", session)
         if (session && "sub" in session && session.sub) {
           user = await getUser(session.sub)
+          console.log("user", user)
         }
       } catch {
         // If session can't be verified, treat as no session
+        console.log("Error: Session not excists")
       }
     } else {
+      console.log("getSessionAndUser:", sessionToken)
       const userAndSession = await getSessionAndUser(sessionToken)
+      console.log("userAndSession:", userAndSession)
       if (userAndSession) {
         session = userAndSession.session
         user = userAndSession.user
+        console.log("session:", session)
+        console.log("user:", user)
       }
     }
   }
@@ -115,7 +123,7 @@ export default async function callbackHandler(params: {
       ? {}
       : await createSession({
           sessionToken: generateSessionToken(),
-          userId: user.id,
+          accountId: account.id as string,
           expires: fromDate(options.session.maxAge),
         })
 
@@ -123,7 +131,7 @@ export default async function callbackHandler(params: {
   } else if (account.type === "oauth") {
     // If signing in with OAuth account, check to see if the account exists already
     const userByAccount = await getUserByAccount({
-      providerAccountId: account.providerAccountId,
+      steamId: account.id as string,
       provider: account.provider,
     })
     if (userByAccount) {
@@ -145,7 +153,7 @@ export default async function callbackHandler(params: {
         ? {}
         : await createSession({
             sessionToken: generateSessionToken(),
-            userId: userByAccount.id,
+            accountId: account.id as string,
             expires: fromDate(options.session.maxAge),
           })
 
@@ -211,9 +219,39 @@ export default async function callbackHandler(params: {
         ? {}
         : await createSession({
             sessionToken: generateSessionToken(),
-            userId: user.id,
+            accountId: account.id as string,
             expires: fromDate(options.session.maxAge),
           })
+
+      return { session, user, isNewUser: true }
+    }
+  } else if (account.type === "openid") {
+    console.log("Callback handler for openid");
+    const userByAccount = await getUserByAccount({
+      steamId: account.id as string,
+      provider: account.provider,
+    })
+    console.log("userByAccount:", userByAccount)
+    // IF NO User by account id - need to create account 
+    if (!userByAccount) {
+      // Need to Create user
+      console.log("Create user", { ...profile, emailVerified: null })
+      const newUser = { ...profile, emailVerified: null }
+      delete (newUser as Omit<AdapterUser, "id">).id
+      user = await createUser(newUser)
+      await events.createUser?.({ user })
+
+      // If the user is already signed in
+      console.log("Create account:", {...account, userId: user.id})
+      await linkAccount({ id: randomUUID?.(), type: account.type, provider: account.provider, steamId: account.id as string, userId: user.id })
+      await events.linkAccount?.({ user, account, profile })
+
+      // Need to Create session
+      session = await createSession({
+        sessionToken: generateSessionToken(),
+        accountId: account.id as string,
+        expires: fromDate(options.session.maxAge),
+      })
 
       return { session, user, isNewUser: true }
     }

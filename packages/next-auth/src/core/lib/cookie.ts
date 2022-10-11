@@ -53,11 +53,11 @@ export type SessionToken<T extends SessionStrategy = "jwt"> = T extends "jwt"
  * @TODO Review cookie settings (names, options)
  */
 export function defaultCookies(useSecureCookies: boolean): CookiesOptions {
-  const cookiePrefix = useSecureCookies ? "__Secure-" : ""
+  const cookiePrefix = useSecureCookies ? "" : ""
   return {
     // default cookie options
     sessionToken: {
-      name: `${cookiePrefix}next-auth.session-token`,
+      name: `${cookiePrefix}brazy-auth.session`,
       options: {
         httpOnly: true,
         sameSite: "lax",

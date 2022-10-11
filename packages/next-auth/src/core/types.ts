@@ -239,7 +239,7 @@ export interface DefaultAccount extends Partial<TokenSet> {
    * - email: The user's email address.
    * - credentials: `id` returned from the `authorize()` callback
    */
-  providerAccountId: string
+  steamId: string
   /** id of the user this account belongs to. */
   userId: string
   /** id of the provider used for this account */
@@ -473,9 +473,10 @@ export interface SessionOptions {
 
 export interface DefaultUser {
   id: string
-  name?: string | null
+  firstName?: string | null
+  lastName?: string | null
   email?: string | null
-  image?: string | null
+  email_verified?: string | null
 }
 
 /**

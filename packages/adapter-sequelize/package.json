@@ -1,0 +1,45 @@
+{
+  "name": "@brazy-auth/sequelize-adapter",
+  "version": "1.0.11",
+  "description": "Sequelize adapter for next-auth.",
+  "homepage": "https://next-auth.js.org",
+  "repository": "https://github.com/nextauthjs/next-auth",
+  "bugs": {
+    "url": "https://github.com/nextauthjs/next-auth/issues"
+  },
+  "author": "github.com/luke-j",
+  "main": "dist/index.js",
+  "license": "ISC",
+  "keywords": [
+    "next-auth",
+    "next.js",
+    "oauth",
+    "sequelize"
+  ],
+  "private": false,
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test:wip": "jest",
+    "build": "tsc"
+  },
+  "files": [
+    "README.md",
+    "dist"
+  ],
+  "peerDependencies": {
+    "brazy-auth": "^5",
+    "sequelize": "^6.6.5"
+  },
+  "devDependencies": {
+    "@brazy-auth/adapter-test": "workspace:*",
+    "@brazy-auth/tsconfig": "workspace:*",
+    "jest": "^27.4.3",
+    "brazy-auth": "workspace:*",
+    "sequelize": "^6.6.5"
+  },
+  "jest": {
+    "preset": "@brazy-auth/adapter-test/jest"
+  }
+}

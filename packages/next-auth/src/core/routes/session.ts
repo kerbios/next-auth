@@ -130,9 +130,9 @@ export default async function session(
           // as needed for presentation purposes (e.g. "you are logged in as...").
           session: {
             user: {
-              name: user.name,
+              name: `${user.firstName} ${user.lastName}`,
               email: user.email,
-              image: user.image,
+              image: user.image as string,
             },
             expires: session.expires.toISOString(),
           },

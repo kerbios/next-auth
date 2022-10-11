@@ -27,7 +27,7 @@
       "dependsOn": ["lint", "build"],
       "outputs": []
     },
-    "@brazy-auth/upstash-redis-adapter#test": {
+    "brazy-auth/upstash-redis-adapter#test": {
       "dependsOn": [
         "lint",
         "build",

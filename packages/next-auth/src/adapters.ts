@@ -10,7 +10,7 @@ export interface AdapterSession {
   /** A randomly generated value that is used to get hold of the session. */
   sessionToken: string
   /** Used to connect the session to a particular user */
-  userId: string
+  accountId: string
   expires: Date
 }
 
@@ -61,7 +61,7 @@ export interface Adapter {
   getUserByEmail: (email: string) => Awaitable<AdapterUser | null>
   /** Using the provider id and the id of the user for a specific account, get the user. */
   getUserByAccount: (
-    providerAccountId: Pick<Account, "provider" | "providerAccountId">
+    steamId: Pick<Account, "provider" | "steamId">
   ) => Awaitable<AdapterUser | null>
   updateUser: (user: Partial<AdapterUser>) => Awaitable<AdapterUser>
   /** @todo Implement */
@@ -73,12 +73,12 @@ export interface Adapter {
   ) => Promise<void> | Awaitable<Account | null | undefined>
   /** @todo Implement */
   unlinkAccount?: (
-    providerAccountId: Pick<Account, "provider" | "providerAccountId">
+    steamId: Pick<Account, "provider" | "steamId">
   ) => Promise<void> | Awaitable<Account | undefined>
   /** Creates a session for the user and returns it. */
   createSession: (session: {
     sessionToken: string
-    userId: string
+    accountId: string
     expires: Date
   }) => Awaitable<AdapterSession>
   getSessionAndUser: (

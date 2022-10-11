@@ -9,7 +9,6 @@ export default (provider) => {
     strict,
     extensions
   } = provider
-  console.log("CLIENT", callbackUrl);
   const client = new openid.RelyingParty(
     callbackUrl,
     realm,

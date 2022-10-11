@@ -11,7 +11,7 @@
     "setup": "turbo run setup",
     "dev": "pnpm dev:app",
     "email": "cd apps/dev && pnpm email",
-    "dev:app": "turbo run dev --parallel --no-deps --no-cache --filter=brazy-auth-app",
+    "dev:app": "turbo run dev --parallel --no-deps --no-cache --filter=@brazy-auth/*",
     "dev:docs": "turbo run dev --parallel --no-deps --no-cache --filter=brazy-auth-docs",
     "version:pr": "node ./config/version-pr",
     "release": "release"
