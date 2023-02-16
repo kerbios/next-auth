@@ -17,7 +17,6 @@ export default async (url, provider) => {
     },
     profile: {
       name: profile.name,
-      email: profile.email ? profile.email.toLowerCase() : null,
       image: profile.image
     }
   }

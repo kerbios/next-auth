@@ -5,6 +5,7 @@ import type { InternalOptions } from "../types"
 import type { OutgoingResponse } from ".."
 import type { Session } from "../.."
 import type { SessionStore } from "../lib/cookie"
+import { BaseNextRequest } from "next/dist/server/base-http"
 
 interface SessionParams {
   options: InternalOptions
@@ -54,8 +55,9 @@ export default async function session(
         user: {
           name: decodedToken?.name,
           email: decodedToken?.email,
-          image: decodedToken?.picture,
-          steamId: decodedToken?.steamId
+          image: decodedToken?.image,
+          steamId: decodedToken?.steamId,
+          ban: decodedToken?.ban
         },
         expires: newExpires.toISOString(),
       }

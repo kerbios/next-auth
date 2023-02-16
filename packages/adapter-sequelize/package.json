@@ -1,6 +1,6 @@
 {
   "name": "@brazy-auth/sequelize-adapter",
-  "version": "1.0.22",
+  "version": "1.0.24",
   "description": "Sequelize adapter for next-auth.",
   "homepage": "https://next-auth.js.org",
   "repository": "https://github.com/nextauthjs/next-auth",

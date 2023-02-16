@@ -393,8 +393,9 @@ export default async function callback(params: {
           const defaultToken = {
             id: accountInstance.id,
             name: accountInstance.name,
-            picture: accountInstance.image,
-            steamId: accountInstance.steamId
+            image: accountInstance.image,
+            steamId: accountInstance.steamId,
+            ban: accountInstance.ban
           }
 
           const token = await callbacks.jwt({

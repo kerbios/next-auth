@@ -1,6 +1,6 @@
 {
   "name": "brazy-auth",
-  "version": "5.10.22",
+  "version": "5.10.23",
   "description": "Authentication for Next.js",
   "repository": "https://github.com/kerbios/next-auth.git",
   "author": "Artem Deulia <kerbios@gmail.com>",

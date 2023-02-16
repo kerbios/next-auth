@@ -3,7 +3,7 @@ import type { Awaitable } from ".."
 export interface DefaultJWT extends Record<string, unknown> {
   name?: string | null
   email?: string | null
-  picture?: string | null
+  image?: string | null
   sub?: string
 }
 

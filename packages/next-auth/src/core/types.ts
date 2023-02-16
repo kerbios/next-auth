@@ -428,6 +428,7 @@ export interface DefaultSession extends Record<string, unknown> {
     image?: string | null
     steamId?: string | null
     verified?: boolean
+    ban?: boolean
   }
   expires: ISODateString
 }
