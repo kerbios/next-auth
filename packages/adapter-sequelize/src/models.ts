@@ -14,6 +14,7 @@ export const Account = {
   tradeUrl: { type: DataTypes.STRING },
   image: { type: DataTypes.STRING },
   userId: { type: DataTypes.UUID },
+  ban: { type: DataTypes.BOOLEAN, allowNull: false, defaultValue: false },
 }
 
 export const User = {
@@ -26,6 +27,9 @@ export const User = {
   lastName: { type: DataTypes.STRING },
   email: { type: DataTypes.STRING, unique: "email" },
   emailVerified: { type: DataTypes.DATE },
+  applicantId: { type: DataTypes.STRING },
+  kycStatus: { type: DataTypes.STRING },
+  phone: { type: DataTypes.STRING },
 }
 
 export const Session = {

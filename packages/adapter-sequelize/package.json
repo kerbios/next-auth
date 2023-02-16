@@ -1,6 +1,6 @@
 {
   "name": "@brazy-auth/sequelize-adapter",
-  "version": "1.0.11",
+  "version": "1.0.22",
   "description": "Sequelize adapter for next-auth.",
   "homepage": "https://next-auth.js.org",
   "repository": "https://github.com/nextauthjs/next-auth",
@@ -33,7 +33,6 @@
     "sequelize": "^6.6.5"
   },
   "devDependencies": {
-    "@brazy-auth/adapter-test": "workspace:*",
     "@brazy-auth/tsconfig": "workspace:*",
     "jest": "^27.4.3",
     "brazy-auth": "workspace:*",

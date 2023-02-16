@@ -1,11 +1,11 @@
-import type { Account as AdapterAccount } from "brazy-auth"
+import type { Account, Account as AdapterAccount } from "brazy-auth"
 import type {
   Adapter,
   AdapterUser,
   AdapterSession,
   VerificationToken,
 } from "brazy-auth/adapters"
-import { Sequelize, Model, ModelCtor } from "sequelize"
+import { Sequelize, Model, ModelCtor, Identifier } from "sequelize"
 import * as defaultModels from "./models"
 
 export { defaultModels as models }
@@ -86,7 +86,7 @@ export default function SequelizeAdapter(
       _synced = true
     }
   }
-
+  User.hasMany(Account);
   Account.belongsTo(User, { onDelete: "cascade" })
   Session.belongsTo(Account, { onDelete: "cascade" })
 
@@ -145,10 +145,49 @@ export default function SequelizeAdapter(
 
       return userInstance
     },
+    async getAccountBySteamId(steamId: string) {
+      await sync()
+      const accountInstance = await Account.findOne({
+        where: { steamId },
+      })
+      return accountInstance
+    },
+    async updateUserKYC(steamId: string, applicantId: string, kycStatus: string) {
+      await sync()
+      
+      const filter = {
+        where: {
+          steamId
+        }
+      };
+
+      const accountInstance = await Account.findOne(filter)
+
+      if (!accountInstance) {
+        return null
+      }
+
+      const userInstance = await User.findByPk(accountInstance.userId as Identifier)
+
+      if (!userInstance) {
+        return null
+      }
+  
+      const affected = await userInstance.update({
+        applicantId,
+        kycStatus
+      })
+
+      if (affected) {
+        return await User.findByPk(accountInstance.userId as Identifier)
+      } else {
+        return null
+      }
+    },
     async linkAccount(account) {
       await sync()
 
-      await Account.create(account)
+      return await Account.create(account)
     },
     async unlinkAccount({ provider, steamId }) {
       await sync()
@@ -156,6 +195,17 @@ export default function SequelizeAdapter(
       await Account.destroy({
         where: { provider, steamId },
       })
+    },
+    async updateAccount(account: Partial<Account>) {
+      await sync()
+
+      const affected = await Account.update(account, { where: { id: account.id } })
+
+      if (affected) {
+        return await Account.findByPk(account.id as Identifier)
+      } else {
+        return null
+      }
     },
     async createSession(session) {
       await sync()
@@ -173,7 +223,7 @@ export default function SequelizeAdapter(
         return null
       }
 
-      const userInstance = await User.findByPk(sessionInstance.userId)
+      const userInstance = await User.findByPk(sessionInstance.accountId)
 
       if (!userInstance) {
         return null
