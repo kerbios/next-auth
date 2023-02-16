@@ -56,6 +56,7 @@ export default async function callbackHandler(params: {
     createSession,
     getSessionAndUser,
     deleteSession,
+    getAccountBySteamId
   } = adapter
 
   let session: AdapterSession | JWT | null = null
@@ -107,7 +108,7 @@ export default async function callbackHandler(params: {
       }
 
       // Update emailVerified property on the user object
-      user = await updateUser({ id: userByEmail.id, emailVerified: new Date() })
+      user = await updateUser({ id: userByEmail.id, emailVerified: new Date().toString() })
       await events.updateUser?.({ user })
     } else {
       const newUser = { ...profile, emailVerified: new Date() }
@@ -231,6 +232,7 @@ export default async function callbackHandler(params: {
       steamId: account.id as string,
       provider: account.provider,
     })
+    let accountInstance;
     console.log("userByAccount:", userByAccount)
     // IF NO User by account id - need to create account 
     if (!userByAccount) {
@@ -243,17 +245,34 @@ export default async function callbackHandler(params: {
 
       // If the user is already signed in
       console.log("Create account:", {...account, userId: user.id})
-      await linkAccount({ id: randomUUID?.(), type: account.type, provider: account.provider, steamId: account.id as string, userId: user.id })
+      const newAccount = await linkAccount({ id: randomUUID?.(), type: account.type, provider: account.provider, steamId: account.id as string, name: profile.name, image: profile.image, userId: user.id })
       await events.linkAccount?.({ user, account, profile })
-
+      console.log('new account?', newAccount);
+      
       // Need to Create session
+      console.log("Create session:", newAccount)
       session = await createSession({
         sessionToken: generateSessionToken(),
-        accountId: account.id as string,
+        accountId: newAccount?.id as string,
         expires: fromDate(options.session.maxAge),
       })
 
-      return { session, user, isNewUser: true }
+      return { session, user, isNewUser: true, accountInstance: newAccount }
+    } else {
+
+      console.log("Get account")
+      // @ts-ignore
+      accountInstance = await getAccountBySteamId(account.id as string);
+      
+      console.log("Create session based on account:", accountInstance);
+      
+      session = await createSession({
+        sessionToken: generateSessionToken(),
+        accountId: accountInstance.id as string,
+        expires: fromDate(options.session.maxAge),
+      })
+
+      return { session, user: userByAccount, isNewUser: false, accountInstance }
     }
   }
 }

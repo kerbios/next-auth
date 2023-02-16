@@ -2,7 +2,7 @@ import { Account, User, Awaitable } from "."
 
 export interface AdapterUser extends User {
   id: string
-  emailVerified: Date | null
+  emailVerified: string | null
 }
 
 export interface AdapterSession {
@@ -68,6 +68,17 @@ export interface Adapter {
   deleteUser?: (
     userId: string
   ) => Promise<void> | Awaitable<AdapterUser | null | undefined>
+  getAccountBySteamId?: (
+    steamId: string
+  ) => Promise<void> | Awaitable<Account | null | undefined>
+  updateUserKYC?: (
+    steamId: string,
+    applicantId: string,
+    kycStatus: string
+  ) => Promise<void> | Awaitable<User | null | undefined>
+  updateAccount?: (
+    account: Partial<Account>
+  ) => Promise<Account | null>
   linkAccount: (
     account: Account
   ) => Promise<void> | Awaitable<Account | null | undefined>

@@ -21,7 +21,7 @@ export interface RequestInternal {
   body?: Record<string, any>
   action: NextAuthAction
   providerId?: string
-  error?: string
+  error?: string 
 }
 
 export interface NextAuthHeader {
@@ -138,7 +138,7 @@ export async function NextAuthHandler<
     req,
     options.logger
   )
-  logger.debug("REQUEST?:", {method, req})
+
   if (method === "GET") {
     const render = renderPage({ ...options, query: req.query, cookies })
     const { pages } = options
@@ -281,6 +281,11 @@ export async function NextAuthHandler<
         return {}
       default:
     }
+  } else if (method === "DELETE") {
+    console.log("REQUEST?:", {method, req})
+    const session = await routes.session({ options, sessionStore })
+    if (session.cookies) cookies.push(...session.cookies)
+    return { ...session, cookies } as any
   }
 
   return {

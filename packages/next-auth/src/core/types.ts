@@ -426,6 +426,8 @@ export interface DefaultSession extends Record<string, unknown> {
     name?: string | null
     email?: string | null
     image?: string | null
+    steamId?: string | null
+    verified?: boolean
   }
   expires: ISODateString
 }
@@ -476,7 +478,10 @@ export interface DefaultUser {
   firstName?: string | null
   lastName?: string | null
   email?: string | null
-  email_verified?: string | null
+  emailVerified?: string | null
+  kycVerified?: string | null
+  phone?: string | null
+  applicantId?: string | null
 }
 
 /**

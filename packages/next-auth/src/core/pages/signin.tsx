@@ -1,3 +1,5 @@
+import * as React from "react"
+import { signIn } from "../../react"
 import type { InternalProvider, Theme } from "../types"
 
 /**
@@ -36,6 +38,9 @@ export default function SigninPage(props: SignInServerPageParams) {
     error: errorType,
   } = props
   // We only want to render providers
+
+  return (null)
+  /*
   const providersToRender = providers.filter((provider) => {
     if (provider.type === "oauth" || provider.type === "email" || provider.type === "openid") {
       // Always render oauth and email type providers
@@ -179,4 +184,5 @@ export default function SigninPage(props: SignInServerPageParams) {
       </div>
     </div>
   )
+  */
 }

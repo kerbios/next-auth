@@ -72,9 +72,7 @@ export async function getToken<R extends boolean = false>(
     req,
     secureCookie = process.env.NEXTAUTH_URL?.startsWith("https://") ??
       !!process.env.VERCEL,
-    cookieName = secureCookie
-      ? "__Secure-next-auth.session-token"
-      : "next-auth.session-token",
+    cookieName = "brazy-auth.session",
     raw,
     decode: _decode = decode,
     logger = console,

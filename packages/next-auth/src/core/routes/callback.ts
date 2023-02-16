@@ -363,13 +363,12 @@ export default async function callback(params: {
         }
         console.log("ADAPTER PASSED:", account, profile)
         try {
-          const isAllowed = await callbacks.signIn({
+          await callbacks.signIn({
             user: userOrProfile,
             account,
             profile,
             email: profile.email
           })
-          console.log("isAllowed:", isAllowed, cookies)
        } catch (error) {
           return {
             redirect: `${url}/error?error=${encodeURIComponent(
@@ -380,29 +379,22 @@ export default async function callback(params: {
        }
         //=================================================================================================
         // Sign user in
-
-        console.log("callbackHandler:", {
-          sessionToken: sessionStore.value,
-          profile,
-          account,
-          options,
-        })
         //@ts-ignore
-        const { user, session, isNewUser } = await callbackHandler({
+        const { user, session, isNewUser, accountInstance } = await callbackHandler({
           sessionToken: sessionStore.value,
           profile,
           account,
           options,
         })
 
-        console.log("callbackHandler Result:", { user, session, isNewUser })
+        console.log("callbackHandler Result:", { user, session, isNewUser, accountInstance })
 
         if (useJwtSession) {
           const defaultToken = {
-            id: account.id,
-            name: profile.name,
-            picture: profile.image,
-            steamId: account.id
+            id: accountInstance.id,
+            name: accountInstance.name,
+            picture: accountInstance.image,
+            steamId: accountInstance.steamId
           }
 
           const token = await callbacks.jwt({
@@ -435,7 +427,7 @@ export default async function callback(params: {
           })
         }
 
-        await events.signIn?.({ user, account, profile })
+        await events.signIn?.({ user, account: accountInstance, profile })
         //===============================================================================
         // Handle first logins on new accounts
         // e.g. option to send users to a new account landing page on initial login
