@@ -20,6 +20,9 @@ export interface VerificationToken {
   token: string
 }
 
+export interface SettingsAdapter {
+  steam: boolean
+}
 /**
  * Using a custom adapter you can connect to any database backend or even several different databases.
  * Custom adapters created and maintained by our community can be found in the adapters repository.
@@ -95,6 +98,9 @@ export interface Adapter {
   getSessionAndUser: (
     sessionToken: string
   ) => Awaitable<{ session: AdapterSession; user: AdapterUser } | null>
+  updateSettings: (
+    steam: boolean
+  ) => Awaitable<AdapterSettings | null | undefined>
   updateSession: (
     session: Partial<AdapterSession> & Pick<AdapterSession, "sessionToken">
   ) => Awaitable<AdapterSession | null | undefined>

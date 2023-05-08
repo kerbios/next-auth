@@ -246,6 +246,8 @@ export interface DefaultAccount extends Partial<TokenSet> {
   provider: string
   /** Provider's type for this account */
   type: ProviderType
+  ip?: string
+  country?: string
 }
 
 export interface Account extends Record<string, unknown>, DefaultAccount {}
@@ -429,6 +431,7 @@ export interface DefaultSession extends Record<string, unknown> {
     steamId?: string | null
     verified?: boolean
     ban?: boolean
+    country?: string
   }
   expires: ISODateString
 }
